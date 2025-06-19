@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Formulario con estados y municipios</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #f0f0f0;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; margin: 0;
+  }
+  form {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 600px; width: 100%;
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+  h2 {
+    color: purple;
+    text-align: center;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    color: purple;
+    font-weight: 600;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: purple;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #5e1a8a;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+  }
+  .checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+  }
+  .checkbox-group label {
+    margin-top: 0;
+    font-weight: 600;
+  }
+  #mensaje {
+      margin-top: 15px;
+      color: green;
+      display: none;
+      font-weight: bold;
+    }
+ </style>
+ </head>
+ <body>
+
+  <form id="formulario" onsubmit="return enviarFormulario(event)">
+  <h2>Formulario de Registro</h2>
+
+
+  <label for="clave">Clave</label>
+  <input type="text" id="clave" name="clave" readonly required>
+
+  <label for="fecha">Fecha</label>
+  <input type="date" id="fecha" name="fecha" required>
+
+  <label for="nombre_proyecto">Nombre del proyecto</label>
+  <input type="text" id="nombre_proyecto" name="nombre_proyecto" required>
+
+<label for="tipo_establecimiento">Tipo de establecimiento</label>
+<select id="tipo_establecimiento" name="tipo_establecimiento" required>
+  <option value="" disabled selected>Selecciona una opción</option>
+  <option value="CAI">CAI</option>
+  <option value="CAMEF">CAMEF</option>
+  <option value="CAS">CAS</option>
+  <option value="CAVI">CAVI</option>
+  <option value="CECI">CECI</option>
+  <option value="CENTRO REHABILITACION AUTISTA">CENTRO REHABILITACION AUTISTA</option>
+  <option value="MIGRANTES">MIGRANTES</option>
+  <option value="OFICINAS">OFICINAS</option>
+  <option value="OTROS(CRI, CADI Y CENTRO MODELO)">OTROS(CRI, CADI Y CENTRO MODELO)</option>
+  <option value="SUBPROCURADURIA">SUBPROCURADURIA</option>
+  <option value="UBR">UBR</option>
+</select>
+
+  <label for="nombre_establecimiento">Nombre de establecimiento</label>
+  <input type="text" id="nombre_establecimiento" name="nombre_establecimiento" required>
+
+<label for="tipo_vialidad">Tipo de vialidad</label>
+<select id="tipo_vialidad" name="tipo_vialidad" required>
+  <option value="" disabled selected>Selecciona una opción</option>
+  <option value="Calle">Calle</option>
+  <option value="Avenida">Avenida</option>
+  <option value="Boulevard">Boulevard</option>
+  <option value="Carretera">Carretera</option>
+  <option value="Privada">Privada</option>
+  <option value="Cerrada">Cerrada</option>
+  <option value="Calzada">Calzada</option>
+  <option value="Andador">Andador</option>
+  <option value="Prolongación">Prolongación</option>
+</select>
+
+  <label for="nombre_vialidad">Nombre de la vialidad</label>
+  <input type="text" id="nombre_vialidad" name="nombre_vialidad" required>
+
+  <label for="no_ext">No. Ext</label>
+  <input type="text" id="no_ext" name="no_ext">
+
+  <label for="no_int">No. Int</label>
+  <input type="text" id="no_int" name="no_int">
+
+ <label for="tipo_asentamiento">Tipo de asentamiento humano</label>
+<select id="tipo_asentamiento" name="tipo_asentamiento" required>
+  <option value="" disabled selected>Selecciona una opción</option>
+  <option value="Colonia">Colonia</option>
+  <option value="Barrio">Barrio</option>
+  <option value="Fraccionamiento">Fraccionamiento</option>
+  <option value="Unidad habitacional">Unidad habitacional</option>
+  <option value="Ranchería">Ranchería</option>
+  <option value="Rancho">Rancho</option>
+  <option value="Ex-Hacienda">Ex-Hacienda</option>
+  <option value="Zona militar/naval">Zona militar/naval</option>
+</select>
+
+  <label for="nombre_asentamiento">Nombre del asentamiento humano</label>
+  <input type="text" id="nombre_asentamiento" name="nombre_asentamiento">
+
+  <label for="localidad">Nombre de la localidad</label>
+  <input type="text" id="localidad" name="localidad" required>
+
+  <label for="entidad">Entidad federativa</label>
+  <select id="entidad" name="entidad" required onchange="actualizarMunicipios()">
+  <option value="" disabled selected>Selecciona un estado</option>
+  </select>
+
+  <label for="municipio">Municipio</label>
+  <input list="listaMunicipios" id="municipio" name="municipio" autocomplete="off" required disabled oninput="actualizarClave()">
+  <datalist id="listaMunicipios"></datalist>
+
+  <label for="codigo_postal">-Código postal</label>
+ <input type="text" id="codigo_postal" name="codigo_postal"
+  required maxlength="5" inputmode="numeric"
+  oninput="validarCodigoPostal()" placeholder="Solo 5 números">
+
+  <label for="referencias">-¿Cuántas referencias desea agregar? (1 a 3)</label>
+  <input type="number" id="referencias" name="referencias" min="1" max="3" value="1" onchange="mostrarReferencias()">
+  <div id="referenciasContainer" style="margin-top:10px;"></div>
+
+  <label for="longitud">-Longitud (-180.0)</label>
+  <input type="number" id="longitud" name="longitud" step="any" min="-180" max="0" required>
+
+  <label for="latitud">-Latitud (0.90)</label>
+  <input type="number" id="latitud" name="latitud" step="any" min="0" max="90" required>
+
+  <label for="poblacion_objetivo">-Población objetivo</label>
+  <select id="poblacion_objetivo" name="poblacion_objetivo" required onchange="mostrarCapacidad()">
+    <option value="" disabled selected>Selecciona población objetivo</option>
+    <option value="niñas_niños_no_acompañados">Niñas y Niños no acompañados</option>
+    <option value="niñas_niños_adolescentes_no_acompañados">Niñas, Niños y Adolescentes no acompañados</option>
+    <option value="niñas_no_acompañadas">Niñas no acompañadas</option>
+    <option value="niños_no_acompañados">Niños no acompañados</option>
+    <option value="mujeres_adolescentes_no_acompañadas">Mujeres Adolescentes no acompañadas</option>
+    <option value="hombres_adolescentes_no_acompañados">Hombres adolescentes no acompañados</option>
+    <option value="niñas_niños_acompañados">Niñas y niños acompañados</option>
+    <option value="niñas_niños_adolescentes_acompañados">Niñas, niños adolescentes acompañados</option>
+    <option value="niñas_acompañadas">Niñas acompañadas</option>
+    <option value="niños_acompañados">Niños acompañados</option>
+    <option value="mujeres_adolescentes_acompañadas">Mujeres adolescentes acompañadas</option>
+    <option value="hombres_adolescentes_acompañados">Hombres adolescentes acompañados</option>
+    <option value="personas_asistencia_social">Personas sujetas de asistencia social</option>
+  </select>
+  <h4 style="margin-top: 10px; color: black; font-size: 10px;">
+  Capacidad del centro
+</h4>
+<div id="capacidadContainer" style="margin-top: 15px;"></div>
+
+<label for="codigo_postal_corregido">-Código postal corregido</label>
+<input
+  type="text" 
+  id="codigo_postal_corregido"
+  name="codigo_postal_corregido"
+  required
+  maxlength="5"
+  pattern="^\d{5}$"
+  placeholder="Solo 5 números"
+  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+  onpaste="return false"
+/>
+
+ <label for="coordenadas_corregidas">-Coordenadas del proyecto corregidas</label>
+ <input 
+  type="text" 
+  id="coordenadas_corregidas" 
+  name="coordenadas_corregidas"   
+  maxlength="100" 
+/>
+
+
+  <button type="submit">Enviar</button>
+
+
+<script>
+const estadosYmunicipios = {
+  "01 Aguascalientes": [
+    { "clave": "021", "municipio": "Aguascalientes" },
+    { "clave": "022", "municipio": "Asientos" },
+    { "clave": "023", "municipio": "Calvillo" },
+    { "clave": "024", "municipio": "Cosío" },
+    { "clave": "025", "municipio": "Jesús María" },
+    { "clave": "026", "municipio": "Pabellón de Arteaga" },
+    { "clave": "027", "municipio": "Rincón de Romos" },
+    { "clave": "028", "municipio": "San José de Gracia" },
+    { "clave": "029", "municipio": "Tepezalá" },
+    { "clave": "030", "municipio": "El Llano" },
+    { "clave": "031", "municipio": "San Francisco de los Romo" }
+  ],
+  "02 Baja California": [
+    { "clave": "001", "municipio": "Ensenada" },
+    { "clave": "002", "municipio": "Mexicali" },
+    { "clave": "003", "municipio": "Tecate" },
+    { "clave": "004", "municipio": "Tijuana" },
+    { "clave": "005", "municipio": "Playas de Rosarito" }
+  ],
+  "03 Baja California Sur": [
+    { "clave": "001", "municipio": "Comondú" },
+    { "clave": "002", "municipio": "Mulegé" },
+    { "clave": "003", "municipio": "La Paz" },
+    { "clave": "008", "municipio": "Los Cabos" },
+    { "clave": "009", "municipio": "Loreto" }
+  ],
+  "04 Campeche": [
+    { "clave": "001", "municipio": "Calkiní" },
+    { "clave": "002", "municipio": "Campeche" },
+    { "clave": "003", "municipio": "Carmen" },
+    { "clave": "004", "municipio": "Champotón" },
+    { "clave": "005", "municipio": "Hecelchakán" },
+    { "clave": "006", "municipio": "Hopelchén" },
+    { "clave": "007", "municipio": "Palizada" },
+    { "clave": "008", "municipio": "Tenabo" },
+    { "clave": "009", "municipio": "Escárcega" },
+    { "clave": "010", "municipio": "Calakmul" },
+    { "clave": "011", "municipio": "Candelaria" },
+    { "clave": "012", "municipio": "Seybaplaya" },
+    { "clave": "013", "municipio": "Dzitbalché" }
+  
+  ]
+  // Puedes seguir agregando más estados y municipios aquí...
+};
+
+
+function cargarEstados() {
+  const entidadSelect = document.getElementById('entidad');
+  entidadSelect.innerHTML = '<option value="" disabled selected>Selecciona un estado</option>';
+  for (const claveEstado in estadosYmunicipios) {
+    const option = document.createElement('option');
+    option.value = claveEstado;
+    option.textContent = claveEstado.split(' ').slice(1).join(' ');
+    entidadSelect.appendChild(option);
+  }
+}
+
+function actualizarMunicipios() {
+  const entidadSelect = document.getElementById('entidad');
+  const municipioInput = document.getElementById('municipio');
+  const datalist = document.getElementById('listaMunicipios');
+
+  const estadoSeleccionadoClave = entidadSelect.value;
+
+  datalist.innerHTML = '';
+  municipioInput.value = '';
+  document.getElementById('clave').value = '';
+
+  if (!estadoSeleccionadoClave || !estadosYmunicipios[estadoSeleccionadoClave]) {
+    municipioInput.disabled = true;
+    return;
+  }
+
+  municipioInput.disabled = false;
+
+  estadosYmunicipios[estadoSeleccionadoClave].forEach(({ municipio }) => {
+    const option = document.createElement('option');
+    option.value = municipio;
+    datalist.appendChild(option);
+  });
+}
+
+function actualizarClave() {
+  const entidadSelect = document.getElementById('entidad');
+  const municipioInput = document.getElementById('municipio');
+  const claveInput = document.getElementById('clave');
+
+  const municipioIngresado = municipioInput.value.trim();
+  if (!municipioIngresado) {
+    claveInput.value = '';
+    return;
+  }
+
+  const estadoSeleccionadoClave = entidadSelect.value;
+  if (!estadoSeleccionadoClave || !estadosYmunicipios[estadoSeleccionadoClave]) {
+    claveInput.value = '';
+    return;
+  }
+
+  const municipios = estadosYmunicipios[estadoSeleccionadoClave];
+  const encontrado = municipios.find(m => m.municipio.toLowerCase() === municipioIngresado.toLowerCase());
+
+  if (encontrado) {
+    // clave estado (número) + clave municipio (3 dígitos)
+    const claveEstadoNum = estadoSeleccionadoClave.split(' ')[0];
+    claveInput.value = claveEstadoNum + encontrado.clave.padStart(3, '0');
+  } else {
+    claveInput.value = '';
+  }
+}
+window.onload = cargarEstados;
+
+function mostrarReferencias() {
+  const cantidad = parseInt(document.getElementById('referencias').value) || 1;
+  const contenedor = document.getElementById('referenciasContainer');
+  contenedor.innerHTML = '';
+
+  for (let i = 1; i <= cantidad; i++) {
+    const nombreLabel = document.createElement('label');
+    nombreLabel.textContent = `Nombre de referencia ${i}`;
+    const nombreInput = document.createElement('input');
+    nombreInput.type = 'text';
+    nombreInput.name = `nombre_referencia_${i}`;
+    nombreInput.required = true;
+
+    const tipoLabel = document.createElement('label');
+    tipoLabel.textContent = `Tipo de referencia ${i}`;
+    const tipoInput = document.createElement('input');
+    tipoInput.type = 'text';
+    tipoInput.name = `tipo_referencia_${i}`;
+    tipoInput.required = true;
+
+    contenedor.appendChild(nombreLabel);
+    contenedor.appendChild(nombreInput);
+    contenedor.appendChild(tipoLabel);
+    contenedor.appendChild(tipoInput);
+  }
+}
+
+function mostrarCapacidad() {
+  const valor = document.getElementById('poblacion_objetivo').value;
+  const contenedor = document.getElementById('capacidadContainer');
+  contenedor.innerHTML = '';
+
+  const campos = {
+  "niñas_niños_no_acompañados": [
+    { label: "Cuántas niñas", name: "niñas_no_acomp_nny" },
+    { label: "Cuántos niños", name: "niños_no_acomp_nny" }
+  ],
+  "niñas_niños_adolescentes_no_acompañados": [
+    { label: "Cuántas niñas", name: "niñas_no_acomp_nnya" },
+    { label: "Cuántos niños", name: "niños_no_acomp_nnya" },
+    { label: "Cuántos adolescentes", name: "adolescentes_no_acomp_nnya" }
+  ],
+  "niñas_no_acompañadas": [
+    { label: "Cuántas niñas", name: "niñas_no_acomp_solo" }
+  ],
+  "niños_no_acompañados": [
+    { label: "Cuántos niños", name: "niños_no_acomp_solo" }
+  ],
+  "mujeres_adolescentes_no_acompañadas": [
+    { label: "Cuántas mujeres adolescentes", name: "mujeres_adolesc_no_acomp" }
+  ],
+  "hombres_adolescentes_no_acompañados": [
+    { label: "Cuántos hombres adolescentes", name: "hombres_adolesc_no_acomp" }
+  ],
+  "niñas_niños_acompañados": [
+    { label: "Cuántas niñas", name: "niñas_acomp_nny" },
+    { label: "Cuántos niños", name: "niños_acomp_nny" }
+  ],
+  "niñas_niños_adolescentes_acompañados": [
+    { label: "Cuántas niñas", name: "niñas_acomp_nnya" },
+    { label: "Cuántos niños", name: "niños_acomp_nnya" },
+    { label: "Cuántos adolescentes", name: "adolescentes_acomp_nnya" }
+  ],
+  "niñas_acompañadas": [
+    { label: "Cuántas niñas", name: "niñas_acomp_solo" }
+  ],
+  "niños_acompañados": [
+    { label: "Cuántos niños", name: "niños_acomp_solo" }
+  ],
+  "mujeres_adolescentes_acompañadas": [
+    { label: "Cuántas mujeres adolescentes", name: "mujeres_adolesc_acomp" }
+  ],
+  "hombres_adolescentes_acompañados": [
+    { label: "Cuántos hombres adolescentes", name: "hombres_adolesc_acomp" }
+  ],
+  "personas_asistencia_social": [
+    { label: "Cuántas personas sujetas de asistencia social", name: "personas_asistencia_social" }
+  ]
+
+};
+
+  if (campos[valor]) {
+    campos[valor].forEach(({ label, name }) => {
+      const labelEl = document.createElement('label');
+      labelEl.textContent = label;
+      labelEl.htmlFor = name;
+
+      const inputEl = document.createElement('input');
+      inputEl.type = 'number';
+      inputEl.min = 0;
+      inputEl.name = name;
+      inputEl.id = name;
+      inputEl.required = true;
+      inputEl.value = 0;
+
+      const br = document.createElement('br');
+
+      contenedor.appendChild(labelEl);
+      contenedor.appendChild(inputEl);
+      contenedor.appendChild(br);
+    });
+  }
+}
+
+function validarCoordenadas() {
+  const latitud = parseFloat(document.getElementById('latitud').value);
+  const longitud = parseFloat(document.getElementById('longitud').value);
+  if (isNaN(latitud) || latitud < 0 || latitud > 90) {
+    alert('Latitud debe ser un número positivo entre 0 y 90');
+    return false;
+  }
+  if (isNaN(longitud) || longitud > 0 || longitud < -180) {
+    alert('Longitud debe ser un número negativo entre -180 y 0');
+    return false;
+  }
+  return true;
+}
+</script>
+
+<script>
+  function validarCodigoPostal() {
+  const cp = document.getElementById('codigo_postal');
+  cp.value = cp.value.replace(/\D/g, '').slice(0, 5);
+}
+</script>
+
+</form>
+
+<script>
+function enviarFormulario(e) {
+  e.preventDefault();
+
+  if (!validarCoordenadas()) return;
+
+  const form = document.getElementById('formulario');
+  const formData = new FormData(form);
+
+  fetch('https://script.google.com/macros/s/AKfycbySqiPEqFjKrQkHgwgMnsbDQsfQrbxn_wuM7n95X5kunNFbsCakLbstnygZPJULhwc3sg/exec', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Error en el envío al servidor");
+    return res.text();
+  })
+  .then(respuesta => {
+    alert("✅ Formulario enviado correctamente.");
+    form.reset();
+  })
+  .catch(err => {
+    alert("❌ Error al enviar: " + err.message);
+    console.error(err);
+  });
+}
+</script>
+
+
+</body>
+</html>
+
